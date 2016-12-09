@@ -34,8 +34,8 @@ export function activate(context: vscode.ExtensionContext) {
             // Check if we don't have any '.'s in the line and the letter starts with 'l'
             // If so, return love as a suggestions
             var count = (lineText.match(/\./g) || []).length;
-            if (count == 0 && currentWord == "l"){
-                let suggestion : vscode.CompletionItem = new vscode.CompletionItem("love", vscode.CompletionItemKind.Module);
+            if (count == 0 && currentWord == "l") {
+                let suggestion: vscode.CompletionItem = new vscode.CompletionItem("love", vscode.CompletionItemKind.Module);
                 suggestion.detail = EXT_TAG;
                 suggestion.documentation = "LOVE 2D Game Framework";
                 return [suggestion];
