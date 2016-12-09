@@ -48,8 +48,7 @@ export let api = {
             "details" : "This module is responsible for decoding sound files.",
             "completionType": "module"
         },
-        "system": {
-            "details" : "Provides access to information about the user's system.",
+        "system": {"details" : "Provides access to information about the user's system.",
             "completionType": "module"
         },
         "thread": {
