@@ -55,7 +55,7 @@ export function activate(context: vscode.ExtensionContext) {
     }, '.'));
 
     // Setup the command to open the documentation for the LOVE method the cursor is currently on
-    var disposable = vscode.commands.registerCommand('Love.openDocumentation', () => {
+    var disposable = vscode.commands.registerCommand('LOVE.openDocumentation', () => {
         // The code you place here will be executed every time your command is executed
         let editor = vscode.window.activeTextEditor;
         let functionCall = getFunctionCall(editor.selection.start.line, editor.selection.start.character);
@@ -72,6 +72,12 @@ export function activate(context: vscode.ExtensionContext) {
             }
             openurl("https://love2d.org/wiki/" + functionCall);
         }
+    });
+
+    // Register command to launch love
+    var launch = vscode.commands.registerCommand('LOVE.launch', () => {
+        let terminal = vscode.window.createTerminal();
+        terminal.sendText("love --console .", true);
     });
 }
 

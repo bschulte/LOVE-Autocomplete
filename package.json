@@ -1,8 +1,8 @@
 {
-    "name": "love-autocomplete",
-    "displayName": "LOVE-Autocomplete",
-    "description": "Autocomplete extension for the LOVE 2D game framework.",
-    "version": "0.0.1",
+    "name": "love",
+    "displayName": "LOVE",
+    "description": "Extension for the LOVE 2D game framework.",
+    "version": "0.2.0",
     "publisher": "bschulte",
     "engines": {
         "vscode": "^1.5.0"
@@ -17,14 +17,22 @@
     "contributes": {
         "commands": [
             {
-                "command": "Love.openDocumentation",
+                "command": "LOVE.openDocumentation",
                 "title": "Open LOVE 2D documentation"
+            },
+            {
+                "command": "LOVE.launch",
+                "title": "Launch LOVE 2D from the working directory"
             }
         ],
         "keybindings": [
             {
-                "command": "Love.openDocumentation",
+                "command": "LOVE.openDocumentation",
                 "key": "Ctrl+Alt+D"
+            },
+            {
+                "command": "LOVE.launch",
+                "key": "Alt+L"
             }
         ]
     },
@@ -39,5 +47,6 @@
         "mocha": "^2.3.3",
         "@types/node": "^6.0.40",
         "@types/mocha": "^2.2.32"
-    }
+    },
+    "repository": "https://github.com/bschulte/LOVE-Autocomplete"
 }
