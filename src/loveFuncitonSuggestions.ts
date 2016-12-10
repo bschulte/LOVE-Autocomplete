@@ -36,6 +36,8 @@ export class LoveSignatureHelpProvider implements SignatureHelpProvider {
             return Promise.resolve(result);
         }
 
+        result.activeParameter = theCall.commas.length;
+
         // Check if it's a function of the base love module
         if (fullMethodCall.split('.').length == 2) {
             let functionData = this.getFunctionData(functionName, api.functions);
@@ -61,7 +63,7 @@ export class LoveSignatureHelpProvider implements SignatureHelpProvider {
                 let typeData = getTypeData(api.types, moduleOrTypeName);
                 let functionData = this.getFunctionData(functionName, typeData.functions);
 
-                result = this.addFunctionSuggestions(functionData);
+                result = this.addFunctionSuggestions(functionData, result.activeParameter);
 
             } else {
                 // We're dealing with a module of love
@@ -81,11 +83,10 @@ export class LoveSignatureHelpProvider implements SignatureHelpProvider {
                     // We're dealing with a function of the module directly
                     functionData = this.getFunctionData(functionName, moduleData.functions);
                 }
-                result = this.addFunctionSuggestions(functionData);
+                result = this.addFunctionSuggestions(functionData, result.activeParameter);
             }
         }
         result.activeSignature = 0;
-        result.activeParameter = theCall.commas.length;
         return Promise.resolve(result);
     }
 
@@ -137,7 +138,7 @@ export class LoveSignatureHelpProvider implements SignatureHelpProvider {
     }
 
     // Add the function suggestions based on the function data
-    private addFunctionSuggestions(functionData: any) {
+    private addFunctionSuggestions(functionData: any, activeParameter: number) {
         let suggestions = new SignatureHelp();
 
         // loop through all function variants
@@ -146,12 +147,17 @@ export class LoveSignatureHelpProvider implements SignatureHelpProvider {
             let si = new SignatureInformation(functionData.name);
             si.documentation = (f.description ? f.description : functionData.description);
 
+            let argumentNames: string[] = [];
             // Loop through the arguments if there is any
             if ('arguments' in f) {
                 for (let arg of f.arguments) {
+                    argumentNames.push(arg.name + ": " + arg.type);
                     si.parameters.push(new ParameterInformation(arg.name, arg.name + ": " + arg.type + "\n" + arg.description));
                 }
             }
+
+            argumentNames[activeParameter] = argumentNames[activeParameter].toUpperCase();
+            si.label = si.label + "(" + argumentNames.join(', ') + ")";
             suggestions.signatures.push(si);
         }
 

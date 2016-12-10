@@ -5,5 +5,5 @@ TODO:
     ✔ Modules for love @done (12/8/2016, 11:28:07 PM)
     ✔ Functions, modules, and types for sub parts of love @done (12/8/2016, 11:47:44 PM)
     ✔ Enum constants @done (12/9/2016, 12:03:05 AM)
-    ☐ Add more info after types, such as functions and super type
-    ☐ Parameter hints
+    ✔ Add more info after types, such as functions and super type @done (12/9/2016, 10:28:04 PM)
+    ✔ Parameter hints @done (12/9/2016, 10:28:05 PM)
