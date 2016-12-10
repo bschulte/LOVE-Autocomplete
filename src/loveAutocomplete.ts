@@ -33,7 +33,6 @@ export function getSuggestions(line: string, currentWord: string) {
 
         let words = line.trim().split('.');
         let targetKey = words[words.length - 2];
-        console.log("Target key in API array:", targetKey);
 
         // If we're not doing a callback then get the various type of completion items we could have
         return getProperData(targetKey, line);
@@ -60,7 +59,6 @@ function getProperData(lookingForKey: string, line: string): vscode.CompletionIt
 
     // Check if we're looking at one of the main modules of LOVE
     if (modules.indexOf(lookingForKey) > -1 && line.includes("love." + lookingForKey)) {
-        console.log("We're looking at a main LOVE module: " + lookingForKey);
         lastModule = lookingForKey;
 
         // Go through the modules and find which one we're looking for
@@ -73,7 +71,6 @@ function getProperData(lookingForKey: string, line: string): vscode.CompletionIt
     }
     // We're looking at either a type or enum
     else {
-        console.log("Trying to look for enum or type");
         // Run through the proper modules enums first and see if that's what we're looking for
         // First, get the proper module name
         let moduleName = line.trim().split('.')[1];
@@ -94,7 +91,6 @@ function getProperData(lookingForKey: string, line: string): vscode.CompletionIt
         for (let i = 0; i < m.enums.length; i++) {
             let enumData = m.enums[i];
             if (enumData.name == lookingForKey) {
-                console.log("Target is an enum!");
                 return getEnumConstantCompletionTypes(enumData);
             }
         }
@@ -103,7 +99,6 @@ function getProperData(lookingForKey: string, line: string): vscode.CompletionIt
         for (let i = 0; i < m.types.length; i++) {
             let typeData = m.types[i];
             if (typeData.name == lookingForKey) {
-                console.log("Target is a type!");
                 return getFunctionCompletionItems(typeData.functions);
             }
         }
@@ -152,7 +147,6 @@ function getFunctionCompletionItems(functions: any): vscode.CompletionItem[] {
 
     // Check for no functions being available
     if (!functions) {
-        console.log("No functions available!");
         return [];
     }
     for (let i = 0; i < functions.length; i++) {
@@ -172,7 +166,6 @@ function getTypeCompletionItems(types: any): vscode.CompletionItem[] {
 
     // Check for no types being available
     if (!types) {
-        console.log("No types available!");
         return [];
     }
 
@@ -193,7 +186,6 @@ function getEnumCompletionItems(enums: any): vscode.CompletionItem[] {
 
     // Check for no enums being available
     if (!enums){
-        console.log("No enums available!");
         return []; 
    }
 

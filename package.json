@@ -16,7 +16,16 @@
     "main": "./out/src/extension",
     "contributes": {
         "commands": [
-            
+            {
+                "command": "Love.openDocumentation",
+                "title": "Open LOVE 2D documentation"
+            }
+        ],
+        "keybindings": [
+            {
+                "command": "Love.openDocumentation",
+                "key": "Ctrl+Alt+D"
+            }
         ]
     },
     "scripts": {

@@ -8,6 +8,8 @@ import { LoveSignatureHelpProvider } from './loveFuncitonSuggestions';
 
 export const EXT_TAG = "LOVE-Autocomplete";
 
+var openurl = require('openurl').open;
+
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
@@ -51,6 +53,89 @@ export function activate(context: vscode.ExtensionContext) {
 
         }
     }, '.'));
+
+    // Setup the command to open the documentation for the LOVE method the cursor is currently on
+    var disposable = vscode.commands.registerCommand('Love.openDocumentation', () => {
+        // The code you place here will be executed every time your command is executed
+        let editor = vscode.window.activeTextEditor;
+        let functionCall = getFunctionCall(editor.selection.start.line, editor.selection.start.character);
+
+        if (functionCall.startsWith("love.")) {
+            console.log('Trying to open LOVE documentation!: ' + functionCall);
+            // Check if we have a Type or Enum in the functionCall by looking at the first character
+            // of each part of a split by '.' string and seeing if it's a capital letter
+            for (let part of functionCall.split('.')){
+                if (part[0] === part[0].toUpperCase()){
+                    openurl("https://love2d.org/wiki/" + part);
+                    return;
+                }
+            }
+            openurl("https://love2d.org/wiki/" + functionCall);
+        }
+    });
+}
+
+// Get the full function call based on where the cursor is
+function getFunctionCall(lineNum: number, cursorPosition: number) {
+    let line = vscode.window.activeTextEditor.document.lineAt(lineNum);
+    let lineText = line.text;
+    let characterLimit = line.range.end.character;
+
+    let functionCall = lineText.charAt(cursorPosition);
+    let newPos = cursorPosition - 1;
+    // Iterate from the cursor position to the beginning of the line or a whitespace character
+    while (true) {
+        if (newPos < 0) {
+            // We've reached the beginning of the line so break
+            break;
+        }
+        let newChar = lineText.charAt(newPos);
+        let done = false;
+        switch (newChar) {
+            case ' ':
+                done = true;
+                break;
+            case '\t':
+                done = true;
+                break;
+            default:
+                functionCall = newChar + functionCall
+                break;
+        }
+        newPos -= 1;
+
+        if (done) { break; }
+    }
+
+    // Iterate from the cursor until the end of line or when a '(' is hit
+    newPos = cursorPosition + 1;
+    while (true) {
+        if (newPos > characterLimit) {
+            // We've reached the end of the line so break
+            break;
+        }
+        let newChar = lineText.charAt(newPos);
+        let done = false;
+        switch (newChar) {
+            case ' ':
+                done = true;
+                break;
+            case '(':
+                done = true;
+                break;
+            case '\t':
+                done = true;
+                break;
+            default:
+                functionCall = functionCall + newChar;
+                break;
+        }
+        newPos += 1;
+
+        if (done) { break; }
+    }
+
+    return functionCall;
 }
 
 // this method is called when your extension is deactivated
