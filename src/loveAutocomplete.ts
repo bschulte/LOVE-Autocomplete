@@ -77,12 +77,34 @@ function getProperData(lookingForKey: string, line: string): vscode.CompletionIt
         // Run through the proper modules enums first and see if that's what we're looking for
         // First, get the proper module name
         let moduleName = line.trim().split('.')[1];
-        let m = getModuleData(moduleName);
 
+        // Check to see if the first character of the "module" is a capital letter. This will mean that we're
+        // dealing with a type of love and not a module
+        let m: any = [];
+        if (moduleName[0] === moduleName[0].toUpperCase()) {
+            // Get the type data first
+            let typeData = getTypeData(api.types, moduleName);
+            return getFunctionCompletionItems(typeData.functions);
+        } else {
+            m = getModuleData(moduleName);
+        }
+
+        // Now we've got the module info that we're referencing
+        // Loop through the module's enums to see if that's what we're looking for
         for (let i = 0; i < m.enums.length; i++) {
             let enumData = m.enums[i];
-            if (enumData.name == lookingForKey){
+            if (enumData.name == lookingForKey) {
+                console.log("Target is an enum!");
                 return getEnumConstantCompletionTypes(enumData);
+            }
+        }
+
+        // Loop through the types to see if that's what we're looking for
+        for (let i = 0; i < m.types.length; i++) {
+            let typeData = m.types[i];
+            if (typeData.name == lookingForKey) {
+                console.log("Target is a type!");
+                return getFunctionCompletionItems(typeData.functions);
             }
         }
     }
@@ -90,7 +112,7 @@ function getProperData(lookingForKey: string, line: string): vscode.CompletionIt
 }
 
 // Find the target modules data
-function getModuleData(moduleName: string): any {
+export function getModuleData(moduleName: string): any {
     for (let i = 0; i < api.modules.length; i++) {
         if (api.modules[i].name == lastModule) {
             return api.modules[i];
@@ -98,6 +120,15 @@ function getModuleData(moduleName: string): any {
     }
     console.error("We couldn't find the module we were looking for! " + moduleName);
     return {};
+}
+
+// Get the target type data. Expects an array of types
+export function getTypeData(startObject: any, typeName: string): any {
+    for (let i = 0; i < startObject.length; i++) {
+        if (startObject[i].name == typeName) {
+            return startObject[i];
+        }
+    }
 }
 
 // This function parses out an array of modules and return an array of CompletionItems
@@ -119,6 +150,11 @@ function getModuleCompletionItems(modules: any): vscode.CompletionItem[] {
 function getFunctionCompletionItems(functions: any): vscode.CompletionItem[] {
     let items: vscode.CompletionItem[] = [];
 
+    // Check for no functions being available
+    if (!functions) {
+        console.log("No functions available!");
+        return [];
+    }
     for (let i = 0; i < functions.length; i++) {
         let newItem = new vscode.CompletionItem(functions[i].name, vscode.CompletionItemKind.Function);
         newItem.detail = "(function) " + EXT_TAG;
@@ -134,6 +170,12 @@ function getFunctionCompletionItems(functions: any): vscode.CompletionItem[] {
 function getTypeCompletionItems(types: any): vscode.CompletionItem[] {
     let items: vscode.CompletionItem[] = [];
 
+    // Check for no types being available
+    if (!types) {
+        console.log("No types available!");
+        return [];
+    }
+
     for (let i = 0; i < types.length; i++) {
         let newItem = new vscode.CompletionItem(types[i].name, vscode.CompletionItemKind.Keyword);
         newItem.detail = "(type) " + EXT_TAG;
@@ -148,6 +190,12 @@ function getTypeCompletionItems(types: any): vscode.CompletionItem[] {
 // This function parses out an array of enums and returns an array of CompletionItems
 function getEnumCompletionItems(enums: any): vscode.CompletionItem[] {
     let items: vscode.CompletionItem[] = [];
+
+    // Check for no enums being available
+    if (!enums){
+        console.log("No enums available!");
+        return []; 
+   }
 
     for (let i = 0; i < enums.length; i++) {
         let newItem = new vscode.CompletionItem(enums[i].name, vscode.CompletionItemKind.Enum);
@@ -166,7 +214,7 @@ function getEnumConstantCompletionTypes(enums: any): vscode.CompletionItem[] {
 
     for (let i = 0; i < enums.constants.length; i++) {
         let newItem = new vscode.CompletionItem(enums.constants[i].name, vscode.CompletionItemKind.Enum);
-        newItem.detail = "(enum) " + EXT_TAG;
+        newItem.detail = "(const) " + EXT_TAG;
         newItem.documentation = enums.constants[i].description;
 
         items.push(newItem);

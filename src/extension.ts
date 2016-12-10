@@ -4,6 +4,7 @@
 import * as vscode from 'vscode';
 import { LUA_MODE } from './luaMode';
 import { getSuggestions } from './loveAutocomplete'
+import { LoveSignatureHelpProvider } from './loveFuncitonSuggestions';
 
 export const EXT_TAG = "LOVE-Autocomplete";
 
@@ -15,10 +16,11 @@ export function activate(context: vscode.ExtensionContext) {
     // This line of code will only be executed once when your extension is activated
     console.log('Congratulations, your extension "love-autocomplete" is now active!');
 
+    // Setup our plugin to help with function signatures
+    context.subscriptions.push(vscode.languages.registerSignatureHelpProvider(LUA_MODE, new LoveSignatureHelpProvider(vscode.workspace.getConfiguration('lua')['docsTool']), '(', ','));
+
     context.subscriptions.push(vscode.languages.registerCompletionItemProvider(LUA_MODE, {
         provideCompletionItems(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): vscode.CompletionItem[] {
-            // console.log(document);
-            // console.log(position);
 
             let filename = document.fileName;
             let lineText = document.lineAt(position.line).text;
@@ -45,27 +47,6 @@ export function activate(context: vscode.ExtensionContext) {
             // the starting letter of the word we have so far
             let suggestions: vscode.CompletionItem[] = getSuggestions(lineText, currentWord);
 
-            // // Check what files the current document includes/requires
-            // let currentFileName = document.uri.fsPath.replace(vscode.workspace.rootPath, '').slice(1).replace('\\', '/');
-            // if (currentFileName in phpFileIncludes) {
-            //     // Look through all included/required files for the current document
-            //     phpFileIncludes[currentFileName].forEach(function (file) {
-            //         if (file in phpFileFunctions) {
-            //             // Look through all the functions declared in the included/required file
-            //             phpFileFunctions[file].forEach(function (func) {
-            //                 // If the included/required function starts with the letter of our current word then add it to the set of suggestions
-            //                 if (func.function.startsWith(currentWord)) {
-            //                     let newSuggestion = new vscode.CompletionItem(func.function, vscode.CompletionItemKind.Function)
-            //                     newSuggestion.detail = "PHP file(" + file + ")"
-            //                     suggestions.push(newSuggestion);
-            //                 }
-            //             });
-            //         }
-            //     });
-            // }
-            // let completionItem = new vscode.CompletionItem(currentWord + " - PHP", vscode.CompletionItemKind.Function);
-            // console.log("Returning completion items");
-            // console.log(suggestions);
             return suggestions;
 
         }
