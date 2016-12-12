@@ -45,8 +45,8 @@ export class LoveSignatureHelpProvider implements SignatureHelpProvider {
             si.documentation = functionData.description;
 
             let params: ParameterInformation[] = [];
-            params.push(new ParameterInformation("test label-param1", "test documentation-param1"));
-            params.push(new ParameterInformation("test label-param2", "test documentation-param2"));
+            // params.push(new ParameterInformation("test label-param1", "test documentation-param1"));
+            // params.push(new ParameterInformation("test label-param2", "test documentation-param2"));
             si.parameters = params;
 
             console.log("Result:", result);
@@ -89,7 +89,7 @@ export class LoveSignatureHelpProvider implements SignatureHelpProvider {
         result.activeSignature = 0;
 
         // Set the active param text to be bold and italics
-        this.highlightActiveParam(result);
+        //this.highlightActiveParam(result, result.activeParameter);
         return Promise.resolve(result);
     }
 
@@ -104,9 +104,9 @@ export class LoveSignatureHelpProvider implements SignatureHelpProvider {
         return null;
     }
 
-    private highlightActiveParam(result: SignatureHelp) {
+    private highlightActiveParam(result: SignatureHelp, activeParam) {
         let label = result.signatures[result.activeSignature].label;
-        let activeParamName = result.signatures[result.activeSignature].parameters[result.activeParameter].label.split(':')[0];
+        let activeParamName = result.signatures[result.activeSignature].parameters[activeParam].label.split(':')[0];
 
         console.log("Replacing label: " + label, ", Param: " + activeParamName);
         result.signatures[result.activeSignature].label = label.replace(activeParamName, "**" + activeParamName + "**");
@@ -167,7 +167,8 @@ export class LoveSignatureHelpProvider implements SignatureHelpProvider {
                 }
             }
 
-            argumentNames[activeParameter] = argumentNames[activeParameter].toUpperCase();
+            let decorator: vscode.TextEditorDecorationType = window.createTextEditorDecorationType({color: "white"});
+            argumentNames[activeParameter] = "** " + argumentNames[activeParameter] + "**";
             si.label = si.label + "(" + argumentNames.join(', ') + ")";
             suggestions.signatures.push(si);
         }
