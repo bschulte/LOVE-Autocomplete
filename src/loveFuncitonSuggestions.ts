@@ -168,7 +168,7 @@ export class LoveSignatureHelpProvider implements SignatureHelpProvider {
             }
 
             let decorator: vscode.TextEditorDecorationType = window.createTextEditorDecorationType({color: "white"});
-            argumentNames[activeParameter] = "** " + argumentNames[activeParameter] + "**";
+            argumentNames[activeParameter] =  argumentNames[activeParameter].toUpperCase();
             si.label = si.label + "(" + argumentNames.join(', ') + ")";
             suggestions.signatures.push(si);
         }

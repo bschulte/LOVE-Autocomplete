@@ -17,10 +17,19 @@ No settings - planning on putting in ability to change hotkeys
 
 ## Known Issues
 
+* **Versions before 0.3.5 may not have the proper dependencies installed for the extension to work, please update if you have an older version.**
 * When a function has multiple signatures, if you select anyone but the 1st and try to type a param it will switch back to the first signature.
 * Command to launch love expects "love" to be in the path
 
 ## Release Notes
+
+### 0.3.6
+
+Realized that I didn't add the proper dependencies to make things work properly, so that's fixed now.
+
+### 0.3.2
+
+Small changes
 
 ### 0.3.0
 

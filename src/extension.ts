@@ -17,7 +17,7 @@ export function activate(context: vscode.ExtensionContext) {
     // Use the console to output diagnostic information (console.log) and errors (console.error)
     // This line of code will only be executed once when your extension is activated
     console.log('Congratulations, your extension "love-autocomplete" is now active!');
-
+    vscode.window.showInformationMessage("LOVE extension loaded!");
     // Setup our plugin to help with function signatures
     context.subscriptions.push(vscode.languages.registerSignatureHelpProvider(LUA_MODE, new LoveSignatureHelpProvider(vscode.workspace.getConfiguration('lua')['docsTool']), '(', ','));
 
@@ -74,11 +74,15 @@ export function activate(context: vscode.ExtensionContext) {
         }
     });
 
+    context.subscriptions.push(disposable);
+
     // Register command to launch love
     var launch = vscode.commands.registerCommand('LOVE.launch', () => {
         let terminal = vscode.window.createTerminal();
         terminal.sendText("love --console .", true);
     });
+
+    context.subscriptions.push(launch);
 }
 
 // Get the full function call based on where the cursor is
