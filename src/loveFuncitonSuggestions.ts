@@ -87,6 +87,9 @@ export class LoveSignatureHelpProvider implements SignatureHelpProvider {
             }
         }
         result.activeSignature = 0;
+
+        // Set the active param text to be bold and italics
+        this.highlightActiveParam(result);
         return Promise.resolve(result);
     }
 
@@ -99,6 +102,14 @@ export class LoveSignatureHelpProvider implements SignatureHelpProvider {
             position = position.translate(0, -1);
         }
         return null;
+    }
+
+    private highlightActiveParam(result: SignatureHelp) {
+        let label = result.signatures[result.activeSignature].label;
+        let activeParamName = result.signatures[result.activeSignature].parameters[result.activeParameter].label.split(':')[0];
+
+        console.log("Replacing label: " + label, ", Param: " + activeParamName);
+        result.signatures[result.activeSignature].label = label.replace(activeParamName, "**" + activeParamName + "**");
     }
 
     private walkBackwardsToBeginningOfCall(document: TextDocument, position: Position): { openParen: Position, commas: Position[] } {

@@ -2,7 +2,7 @@
     "name": "love",
     "displayName": "LOVE",
     "description": "Extension for the LOVE 2D game framework.",
-    "version": "0.2.0",
+    "version": "0.3.1",
     "publisher": "bschulte",
     "engines": {
         "vscode": "^1.5.0"
