@@ -9,7 +9,7 @@ This is a simple auto complete extension for the LOVE 2D game framework. It make
 
 ## Requirements
 
-No Requirements
+Make sure you add the `love` command to your path / profile with the [following directions](https://love2d.org/wiki/Getting_Started) based on your platform:
 
 ## Extension Settings
 
