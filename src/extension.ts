@@ -3,6 +3,7 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import { LUA_MODE } from './luaMode';
+import { MOONSCRIPT_MODE } from './moonscriptMode';
 import { getSuggestions } from './loveAutocomplete'
 import { LoveSignatureHelpProvider } from './loveFuncitonSuggestions';
 
@@ -19,8 +20,9 @@ export function activate(context: vscode.ExtensionContext) {
     console.log('Congratulations, your extension "love-autocomplete" is now active!');
     // Setup our plugin to help with function signatures
     context.subscriptions.push(vscode.languages.registerSignatureHelpProvider(LUA_MODE, new LoveSignatureHelpProvider(vscode.workspace.getConfiguration('lua')['docsTool']), '(', ','));
-
-    context.subscriptions.push(vscode.languages.registerCompletionItemProvider(LUA_MODE, {
+    context.subscriptions.push(vscode.languages.registerSignatureHelpProvider(MOONSCRIPT_MODE, new LoveSignatureHelpProvider(vscode.workspace.getConfiguration('lua')['docsTool']), '(', ','));
+    
+    let completionItemProvider = {
         provideCompletionItems(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): vscode.CompletionItem[] {
 
             let filename = document.fileName;
@@ -51,7 +53,10 @@ export function activate(context: vscode.ExtensionContext) {
             return suggestions;
 
         }
-    }, '.'));
+    };
+
+    context.subscriptions.push(vscode.languages.registerCompletionItemProvider(LUA_MODE, completionItemProvider, '.'));
+    context.subscriptions.push(vscode.languages.registerCompletionItemProvider(MOONSCRIPT_MODE, completionItemProvider, '.'));
 
     // Setup the command to open the documentation for the LOVE method the cursor is currently on
     var disposable = vscode.commands.registerCommand('LOVE.openDocumentation', () => {
