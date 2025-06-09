@@ -36,7 +36,15 @@
                 "command": "LOVE.launch",
                 "key": "Alt+L"
             }
-        ]
+        ],
+        "menus": {
+            "editor/context": [
+                {
+                    "command": "LOVE.openDocumentation",
+                    "group": "navigation@LOVE"
+                }
+            ]
+        }
     },
     "scripts": {
         "vscode:prepublish": "tsc -p ./",
